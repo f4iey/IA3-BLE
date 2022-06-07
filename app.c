@@ -32,6 +32,10 @@
 #include "sl_bluetooth.h"
 #include "gatt_db.h"
 #include "app.h"
+//on ajoute la lib des capteurs
+#include "sl_sensor_rht.h"
+//lecture et conversion BLE
+#include "temperature.h"
 
 // The advertising set handle allocated from Bluetooth stack.
 static uint8_t advertising_set_handle = 0xff;
@@ -45,6 +49,7 @@ SL_WEAK void app_init(void)
   // Put your additional application init code here!                         //
   // This is called once during start-up.                                    //
   /////////////////////////////////////////////////////////////////////////////
+  app_log_info("%s: activation...\n", __FUNCTION__);
 }
 
 /**************************************************************************//**
@@ -121,11 +126,21 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // -------------------------------
     // This event indicates that a new connection was opened.
     case sl_bt_evt_connection_opened_id:
+      app_log_info("%s: connection_opened!\n", __FUNCTION__);
+      //activation capteur
+      app_log_info("activation du capteur...\n");
+      while (sl_sensor_rht_init());
+      app_log_info("fait!\n");
       break;
 
     // -------------------------------
     // This event indicates that a connection was closed.
     case sl_bt_evt_connection_closed_id:
+      app_log_info("%s: connection_closed! \n", __FUNCTION__);
+      //desactivation capteur
+      app_log_info("desactivation du capteur...\n");
+      sl_sensor_rht_deinit();
+      app_log_info("fait!\n");
       // Restart advertising after client has disconnected.
       sc = sl_bt_advertiser_start(
         advertising_set_handle,
@@ -138,6 +153,11 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     // Add additional event handlers here as your application requires!      //
     ///////////////////////////////////////////////////////////////////////////
 
+    case sl_bt_evt_gatt_server_user_read_request_id:
+      app_log_info("%s: Temp lue! \n", __FUNCTION__);
+      //affichage de la température
+      app_log_info("T=%d°C\n", get_temp_BLE());
+      break;
     // -------------------------------
     // Default event handler.
     default:
