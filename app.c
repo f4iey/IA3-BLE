@@ -154,9 +154,28 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     ///////////////////////////////////////////////////////////////////////////
 
     case sl_bt_evt_gatt_server_user_read_request_id:
+      if(evt->data.evt_gatt_server_user_read_request.characteristic == gattdb_temperature){
+        app_log_info("L'acces en lecture concerne bien la caracteristique temperature!");
+        //envoi de la caractéristique température
+        int16_t temp = 0;
+        int16_t* pTemp= &temp;
+        *pTemp = get_temp_BLE();
+        sl_bt_gatt_server_send_user_read_response(evt->data.evt_gatt_server_user_read_request.connection,
+                                                            gattdb_temperature,
+                                                            0,
+                                                            sizeof(int16_t),
+                                                            (uint8_t*)pTemp,
+                                                            NULL);
+      }
       app_log_info("%s: Temp lue! \n", __FUNCTION__);
       //affichage de la température
-      app_log_info("T=%d°C\n", get_temp_BLE());
+      app_log_info("T=%dBLE\n", get_temp_BLE());
+      break;
+
+    case sl_bt_evt_gatt_server_characteristic_status_id:
+      app_log_info("Notify declenche!\n");
+      if(evt->data.evt_gatt_server_characteristic_status.characteristic == gattdb_temperature)
+              app_log_info("L'acces en lecture concerne bien la caracteristique temperature!");
       break;
     // -------------------------------
     // Default event handler.
