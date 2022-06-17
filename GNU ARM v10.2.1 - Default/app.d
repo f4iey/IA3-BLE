@@ -97,6 +97,7 @@ app.o: ../app.c \
  C\:\Users\Xen\SimplicityStudio\v5_workspace\soc_empty\autogen/gatt_db.h \
  c\:\users\xen\simplicitystudio\sdks\gecko_sdk\protocol\bluetooth\inc\sli_bt_gattdb_def.h \
  ../app.h \
+ c\:\users\xen\simplicitystudio\sdks\gecko_sdk\app\bluetooth\common\simple_timer\sl_simple_timer.h \
  c\:\users\xen\simplicitystudio\sdks\gecko_sdk\app\bluetooth\common\sensor_rht\sl_sensor_rht.h \
  ../temperature.h
 c\:\users\xen\simplicitystudio\sdks\gecko_sdk\platform\common\toolchain\inc\sl_gcc_preinclude.h:
@@ -197,5 +198,6 @@ c\:\users\xen\simplicitystudio\sdks\gecko_sdk\protocol\bluetooth\inc\sl_bt_api_c
 C\:\Users\Xen\SimplicityStudio\v5_workspace\soc_empty\autogen/gatt_db.h:
 c\:\users\xen\simplicitystudio\sdks\gecko_sdk\protocol\bluetooth\inc\sli_bt_gattdb_def.h:
 ../app.h:
+c\:\users\xen\simplicitystudio\sdks\gecko_sdk\app\bluetooth\common\simple_timer\sl_simple_timer.h:
 c\:\users\xen\simplicitystudio\sdks\gecko_sdk\app\bluetooth\common\sensor_rht\sl_sensor_rht.h:
 ../temperature.h:

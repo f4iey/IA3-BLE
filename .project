@@ -331,6 +331,11 @@
 			<locationURI>STUDIO_SDK_LOC/platform/emlib/src/em_usart.c</locationURI>
 		</link>
 		<link>
+			<name>gecko_sdk_4.0.2/protocol/bluetooth/api/sl_bt.xapi</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/protocol/bluetooth/api/sl_bt.xapi</locationURI>
+		</link>
+		<link>
 			<name>gecko_sdk_4.0.2/protocol/bluetooth/inc/sl_bgapi.h</name>
 			<type>1</type>
 			<locationURI>STUDIO_SDK_LOC/protocol/bluetooth/inc/sl_bgapi.h</locationURI>

@@ -32,6 +32,7 @@
 #include "sl_bluetooth.h"
 #include "gatt_db.h"
 #include "app.h"
+#include "sl_simple_timer.h"
 //on ajoute la lib des capteurs
 #include "sl_sensor_rht.h"
 //lecture et conversion BLE
@@ -63,6 +64,10 @@ SL_WEAK void app_process_action(void)
   // Do not call blocking functions from here!                               //
   /////////////////////////////////////////////////////////////////////////////
 }
+
+static sl_simple_timer_t timer;
+
+static void callback(sl_bt_msg_t* evt);
 
 /**************************************************************************//**
  * Bluetooth stack event handler.
@@ -173,13 +178,40 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       break;
 
     case sl_bt_evt_gatt_server_characteristic_status_id:
-      app_log_info("Notify declenche!\n");
-      if(evt->data.evt_gatt_server_characteristic_status.characteristic == gattdb_temperature)
-              app_log_info("L'acces en lecture concerne bien la caracteristique temperature!");
-      break;
+          app_log_info("evt declenche!\n");
+
+    //on regarde si la valeur est à 0x1
+          if(evt->data.evt_gatt_server_characteristic_status.client_config_flags == gatt_notification){
+                  app_log_info("Notify temperature!\n");
+    //envoi de la caractéristique température
+            int16_t temp = 0;
+            int16_t* pTemp= &temp;
+
+            *pTemp = get_temp_BLE(); //on crée un pointeur car la fonction a besoin de lire la donnée depuis une adresse
+            sl_bt_gatt_server_send_notification(evt->data.evt_gatt_server_user_read_request.connection, gattdb_temperature,
+                                                        sizeof(int16_t),
+                                                        (uint8_t*)pTemp);
+
+            sl_simple_timer_start(&timer, 1000, callback, &temp, true);
+
+          }
+    break;
     // -------------------------------
     // Default event handler.
     default:
       break;
   }
+
+}
+static void callback(sl_bt_msg_t* evt){
+  static int tstep = 0;
+  int16_t temp = get_temp_BLE();
+
+  sl_bt_gatt_server_send_notification(evt->data.evt_gatt_server_user_read_request.connection, gattdb_temperature,
+                                                          sizeof(int16_t),
+                                                          (uint8_t*)&temp);
+      app_log_info("overflow du timer\n");
+      app_log_info("timer step : %d\n", tstep);
+      app_log_info("T=%dBLE\n", get_temp_BLE());
+      tstep++;
 }
